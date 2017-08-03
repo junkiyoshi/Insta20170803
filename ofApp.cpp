@@ -8,12 +8,7 @@ void ofApp::setup(){
 
 	ofNoFill();
 
-	this->size = 20;
-
-	for (int i = 0; i < this->size; i++) {
-		this->angle_log_1.push_back(0);
-		this->angle_log_2.push_back(0);
-	}
+	this->noise_source = ofRandom(10);
 }
 
 //--------------------------------------------------------------
@@ -25,26 +20,25 @@ void ofApp::update(){
 void ofApp::draw(){
 	this->cam.begin();
 
-	float angle_1 = (float)ofGetMouseX() / (float)ofGetWidth() * 360.f;
-	float angle_2 = (float)ofGetMouseY() / (float)ofGetHeight() * 360.f;
+	float tmp_noise_source = this->noise_source;
+	float noise_step = 0.05;
+	ofColor c;
+	float step = 10;
 
-	this->angle_log_1.push_back(angle_1);
-	this->angle_log_2.push_back(angle_2);
+	for (int i = 0; i < 256; i++) {
+		c.setHsb(255 - 255 * ofNoise(tmp_noise_source), 255, 255);
+		ofSetColor(c, 255 - i);
 
-	this->angle_log_1.erase(this->angle_log_1.begin());
-	this->angle_log_2.erase(this->angle_log_2.begin());
-
-	float span = 50;
-	for (int i = this->size; i > 0; i--) {
-		ofSetColor(255, 255 - i);
+		//ofSetColor(255, 255 - i);
 
 		ofPushMatrix();
-		ofRotateY(this->angle_log_1[this->size - i]);
-		ofRotateX(this->angle_log_2[this->size - i]);
-		ofEllipse(ofVec3f(0, 0, 0), i * span, i * span);
+		ofEllipse(ofVec3f(0, 0, ofMap(ofNoise(tmp_noise_source), 0, 1, -ofGetHeight() / 4, ofGetHeight() / 4)), i * step, i * step);
 
+		tmp_noise_source -= noise_step;
 		ofPopMatrix();
 	}
+
+	this->noise_source += noise_step * 0.5;
 
 	this->cam.end();
 }

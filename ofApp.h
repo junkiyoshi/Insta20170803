@@ -20,9 +20,8 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-		
-		ofEasyCam cam;
 
-		int size;
-		vector<float> angle_log_1, angle_log_2;
+		ofEasyCam cam;
+		float noise_source;
+		
 };
